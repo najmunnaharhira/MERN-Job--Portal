@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import Swal from 'sweetalert2'
 
 export default function Login() {
   const { user, loading: authLoading, login } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
+  const from = location.state?.from || '/'
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [submitting, setSubmitting] = useState(false)
 
   useEffect(() => {
-    if (!authLoading && user) navigate('/', { replace: true })
-  }, [user, authLoading, navigate])
+    if (!authLoading && user) navigate(from, { replace: true })
+  }, [user, authLoading, navigate, from])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -24,7 +26,7 @@ export default function Login() {
     try {
       await login(email.trim(), password)
       await Swal.fire({ icon: 'success', title: 'Welcome back!', timer: 1500, showConfirmButton: false })
-      navigate('/')
+      navigate(from, { replace: true })
     } catch (err) {
       Swal.fire({ icon: 'error', title: 'Login failed', text: err.message || 'Invalid email or password.' })
     } finally {

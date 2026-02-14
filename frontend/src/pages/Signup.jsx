@@ -1,23 +1,27 @@
 import React, { useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import Swal from 'sweetalert2'
 
 export default function Signup() {
   const { user, loading: authLoading, signup } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
+  const from = location.state?.from || '/'
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState('')
 
   useEffect(() => {
-    if (!authLoading && user) navigate('/', { replace: true })
-  }, [user, authLoading, navigate])
+    if (!authLoading && user) navigate(from, { replace: true })
+  }, [user, authLoading, navigate, from])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    setError('')
     if (!email.trim() || !password) {
       Swal.fire({ icon: 'warning', title: 'Required', text: 'Email and password are required.' })
       return
@@ -27,16 +31,17 @@ export default function Signup() {
       return
     }
     if (password !== confirmPassword) {
-      Swal.fire({ icon: 'warning', title: 'Mismatch', text: 'Passwords do not match.' })
+      Swal.fire({ icon: 'warning', title: 'Passwords do not match', text: 'Please re-enter your password.' })
       return
     }
     setSubmitting(true)
     try {
       await signup((name || '').trim(), email.trim(), password)
-      await Swal.fire({ icon: 'success', title: 'Account created!', timer: 1500, showConfirmButton: false })
-      navigate('/')
+      await Swal.fire({ icon: 'success', title: 'Account created!', text: 'You are now signed in.', timer: 2000, showConfirmButton: false })
+      navigate(from, { replace: true })
     } catch (err) {
-      Swal.fire({ icon: 'error', title: 'Sign up failed', text: err.message || 'Could not create account.' })
+      const message = err.message || 'Could not create account. Try again.'
+      Swal.fire({ icon: 'error', title: 'Sign up failed', text: message })
     } finally {
       setSubmitting(false)
     }
