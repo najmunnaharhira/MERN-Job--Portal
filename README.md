@@ -52,3 +52,10 @@ MERN-Job--Portal/
 - `POST /api/jobs` – create a job (body: job fields)
 
 The frontend proxies `/api` to the backend in development, so it can call the API without CORS issues.
+
+## Deploy on Vercel
+
+1. Import the repo in [Vercel](https://vercel.com).
+2. In **Project Settings → General**, set **Root Directory** to `frontend` (so the build runs inside the frontend folder).
+3. Leave **Build Command** and **Output Directory** as default (Vercel will use `npm run build` and `dist` from the root `frontend`).
+4. Deploy. The backend API is not deployed on Vercel; run it separately (e.g. Railway, Render) if you need it in production.

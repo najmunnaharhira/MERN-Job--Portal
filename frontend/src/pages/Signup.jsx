@@ -1,16 +1,20 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import Swal from 'sweetalert2'
 
 export default function Signup() {
-  const { signup } = useAuth()
+  const { user, loading: authLoading, signup } = useAuth()
   const navigate = useNavigate()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [submitting, setSubmitting] = useState(false)
+
+  useEffect(() => {
+    if (!authLoading && user) navigate('/', { replace: true })
+  }, [user, authLoading, navigate])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -37,6 +41,15 @@ export default function Signup() {
       setSubmitting(false)
     }
   }
+
+  if (authLoading) {
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-brand border-t-transparent rounded-full animate-spin" />
+      </div>
+    )
+  }
+  if (user) return null
 
   return (
     <div className="min-h-[60vh] flex items-center justify-center px-4 py-12">
