@@ -125,6 +125,8 @@ export function JobsProvider({ children }) {
   return <JobsContext.Provider value={value}>{children}</JobsContext.Provider>
 }
 
+// Context + hook in same file is intentional; hook is the public API for the context
+// eslint-disable-next-line react-refresh/only-export-components
 export function useJobs() {
   const ctx = useContext(JobsContext)
   if (!ctx) throw new Error('useJobs must be used within JobsProvider')
