@@ -1,21 +1,54 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
-import { MdWork } from 'react-icons/md'
+import { Link, useLocation } from 'react-router-dom'
+
+const navLinks = [
+  { to: '/', label: 'Start a search' },
+  { to: '/my-jobs', label: 'My Jobs' },
+  { to: '/salary', label: 'Salary estimate' },
+  { to: '/add-job', label: 'Post A Job' },
+]
 
 const Header = () => {
+  const location = useLocation()
+
   return (
-    <header className="bg-slate-900 text-white shadow-lg">
-      <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-2 text-xl font-bold hover:text-indigo-300 transition-colors">
-          <MdWork className="text-2xl text-indigo-400" />
-          <span>Job Portal</span>
-        </Link>
-        <nav className="flex items-center gap-6">
-          <Link to="/" className="hover:text-indigo-300 transition-colors">Jobs</Link>
-          <Link to="/add-job" className="bg-indigo-600 hover:bg-indigo-500 px-4 py-2 rounded-lg transition-colors font-medium">
-            Post a Job
+    <header className="bg-white border-b border-slate-200 sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          <Link to="/" className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-full bg-brand flex items-center justify-center flex-shrink-0">
+              <div className="w-2 h-2 rounded-full bg-white" />
+            </div>
+            <span className="font-semibold text-slate-900 text-lg">JobPortal</span>
           </Link>
-        </nav>
+          <nav className="flex items-center gap-3 sm:gap-6 flex-wrap justify-end">
+            {navLinks.map(({ to, label }) => (
+              <Link
+                key={to}
+                to={to}
+                className={`text-sm font-medium transition-colors whitespace-nowrap ${
+                  location.pathname === to ? 'text-brand' : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                {label}
+              </Link>
+            ))}
+            <div className="flex items-center gap-2 sm:gap-3 ml-1 sm:ml-2">
+              <Link
+                to="/login"
+                className="text-sm font-medium text-slate-600 hover:text-slate-900"
+              >
+                Log in
+              </Link>
+              <Link
+                to="/signup"
+                className="px-4 py-2 bg-brand hover:bg-brand-hover text-white text-sm font-medium rounded-lg transition-colors"
+              >
+                Sign up
+              </Link>
+            </div>
+          </nav>
+        </div>
       </div>
     </header>
   )

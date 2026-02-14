@@ -7,7 +7,7 @@
   @apply border border-slate-300 min-h-[42px];
 }
 .react-select-container .react-select__control--is-focused {
-  @apply border-indigo-500 ring-2 ring-indigo-500/20 outline-none;
+  @apply border-brand ring-2 ring-brand/20 outline-none;
 }
 .react-select-container .react-select__control:hover {
   @apply border-slate-400;
@@ -19,5 +19,5 @@
   @apply bg-slate-100;
 }
 .react-select-container .react-select__option--is-selected {
-  @apply bg-indigo-600 text-white;
+  @apply bg-brand text-white;
 }

@@ -20,7 +20,7 @@ export default function JobDetail() {
     return (
       <div className="container mx-auto px-4 py-12 text-center">
         <p className="text-slate-600 mb-4">Job not found.</p>
-        <Link to="/" className="text-indigo-600 hover:underline">Back to jobs</Link>
+        <Link to="/" className="text-brand hover:underline font-medium">Back to jobs</Link>
       </div>
     )
   }
@@ -31,7 +31,7 @@ export default function JobDetail() {
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-3xl">
-      <Link to="/" className="inline-flex items-center gap-2 text-slate-600 hover:text-indigo-600 mb-6">
+      <Link to="/" className="inline-flex items-center gap-2 text-slate-600 hover:text-brand mb-6">
         <MdArrowBack /> Back to jobs
       </Link>
       <article className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
@@ -76,7 +76,7 @@ export default function JobDetail() {
             <span className="px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-sm">
               {job.experienceLevel}
             </span>
-            <span className="px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 text-sm">
+            <span className="px-3 py-1 rounded-full bg-brand/10 text-brand font-medium text-sm">
               {job.salaryType}
             </span>
           </div>

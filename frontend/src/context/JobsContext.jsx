@@ -81,7 +81,47 @@ export function JobsProvider({ children }) {
     return jobs.find(j => j.id === numId)
   }
 
-  const value = { jobs, loading, addJob, getJobById }
+  const updateJob = async (id, job) => {
+    try {
+      const res = await fetch(`/api/jobs/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...job, minPrice: String(job.minPrice ?? ''), maxPrice: String(job.maxPrice ?? '') })
+      })
+      if (res.ok) {
+        const updated = await res.json()
+        setJobs(prev => prev.map(j => (j.id === Number(id) ? updated : j)))
+        return updated
+      }
+    } catch (_) { /* API not available */ }
+    const customJobs = (await localforage.getItem(JOBS_STORAGE_KEY)) || []
+    const idx = customJobs.findIndex(j => j.id === Number(id))
+    if (idx >= 0) {
+      const updated = { ...customJobs[idx], ...job, id: Number(id), minPrice: String(job.minPrice ?? ''), maxPrice: String(job.maxPrice ?? '') }
+      customJobs[idx] = updated
+      await localforage.setItem(JOBS_STORAGE_KEY, customJobs)
+      setJobs(prev => prev.map(j => (j.id === Number(id) ? updated : j)))
+      return updated
+    }
+    return null
+  }
+
+  const deleteJob = async (id) => {
+    try {
+      const res = await fetch(`/api/jobs/${id}`, { method: 'DELETE' })
+      if (res.ok) {
+        setJobs(prev => prev.filter(j => j.id !== Number(id)))
+        return true
+      }
+    } catch (_) { /* API not available */ }
+    const customJobs = (await localforage.getItem(JOBS_STORAGE_KEY)) || []
+    const filtered = customJobs.filter(j => j.id !== Number(id))
+    await localforage.setItem(JOBS_STORAGE_KEY, filtered)
+    setJobs(prev => prev.filter(j => j.id !== Number(id)))
+    return true
+  }
+
+  const value = { jobs, loading, addJob, getJobById, updateJob, deleteJob }
   return <JobsContext.Provider value={value}>{children}</JobsContext.Provider>
 }
 

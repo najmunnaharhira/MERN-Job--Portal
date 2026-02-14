@@ -1,52 +1,63 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { MdLocationOn, MdWork, MdAttachMoney } from 'react-icons/md'
+
+const COMPANY_COLORS = [
+  'bg-blue-500',
+  'bg-emerald-500',
+  'bg-violet-500',
+  'bg-rose-500',
+  'bg-amber-500',
+  'bg-teal-500',
+]
+const getCompanyColor = (companyName) => {
+  const hash = (companyName || '').split('').reduce((a, c) => a + c.charCodeAt(0), 0)
+  return COMPANY_COLORS[hash % COMPANY_COLORS.length]
+}
 
 const JobCard = ({ job }) => {
-  const salaryLabel = job.salaryType === 'Monthly'
-    ? `$${job.minPrice}k - $${job.maxPrice}k / month`
-    : `$${job.minPrice}k - $${job.maxPrice}k / year`
+  const salaryLabel =
+    job.salaryType === 'Monthly'
+      ? `$${job.minPrice}-${job.maxPrice}k`
+      : job.salaryType === 'Hourly'
+      ? `$${job.minPrice}-${job.maxPrice}/hr`
+      : `$${job.minPrice}-${job.maxPrice}k`
+
+  const typeSalary = `${job.employmentType || 'Full-time'} ${salaryLabel}`
 
   return (
     <Link
       to={`/job/${job.id}`}
-      className="block bg-white rounded-xl border border-slate-200 p-5 hover:border-indigo-300 hover:shadow-md transition-all duration-200"
+      className="block bg-white rounded-xl border border-slate-200 p-5 hover:border-brand/40 hover:shadow-lg transition-all duration-200"
     >
       <div className="flex gap-4">
-        <div className="flex-shrink-0 w-14 h-14 rounded-lg bg-slate-100 flex items-center justify-center overflow-hidden text-slate-600 font-bold text-lg">
+        <div className="flex-shrink-0">
           {job.companyLogo ? (
             <img
               src={job.companyLogo}
               alt={job.companyName}
-              className="w-full h-full object-cover"
+              className="w-12 h-12 rounded-lg object-cover"
               onError={(e) => {
                 e.target.style.display = 'none'
                 e.target.nextElementSibling?.classList.remove('hidden')
               }}
             />
           ) : null}
-          <span className={job.companyLogo ? 'hidden' : ''}>
+          <div
+            className={`w-12 h-12 rounded-lg flex items-center justify-center text-white font-bold text-lg ${getCompanyColor(
+              job.companyName
+            )} ${job.companyLogo ? 'hidden' : ''}`}
+          >
             {job.companyName?.charAt(0) || '?'}
-          </span>
+          </div>
         </div>
         <div className="flex-1 min-w-0">
           <h3 className="font-semibold text-slate-900 truncate">{job.jobTitle}</h3>
-          <p className="text-slate-600 text-sm">{job.companyName}</p>
-          <div className="flex flex-wrap gap-3 mt-2 text-sm text-slate-500">
-            <span className="flex items-center gap-1">
-              <MdLocationOn className="flex-shrink-0" />
-              {job.jobLocation}
-            </span>
-            <span className="flex items-center gap-1">
-              <MdWork className="flex-shrink-0" />
-              {job.employmentType}
-            </span>
-            <span className="flex items-center gap-1">
-              <MdAttachMoney className="flex-shrink-0" />
-              {salaryLabel}
-            </span>
-          </div>
-          <p className="text-xs text-slate-400 mt-1">Posted {job.postingDate}</p>
+          <p className="text-slate-600 text-sm">
+            {job.companyName} {job.jobLocation}
+          </p>
+          <p className="text-sm text-slate-500 mt-1">{typeSalary}</p>
+          <p className="text-xs text-slate-400 mt-1">{job.postingDate}</p>
+          <p className="text-sm text-slate-600 mt-2 line-clamp-2">{job.description}</p>
         </div>
       </div>
     </Link>

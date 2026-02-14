@@ -52,6 +52,33 @@ app.post('/api/jobs', (req, res) => {
   res.status(201).json(newJob)
 })
 
+app.put('/api/jobs/:id', (req, res) => {
+  const jobs = readJobs()
+  const id = Number(req.params.id)
+  const idx = jobs.findIndex(j => j.id === id)
+  if (idx === -1) return res.status(404).json({ error: 'Job not found' })
+  const updated = {
+    ...jobs[idx],
+    ...req.body,
+    id,
+    minPrice: String(req.body.minPrice ?? jobs[idx].minPrice ?? ''),
+    maxPrice: String(req.body.maxPrice ?? jobs[idx].maxPrice ?? '')
+  }
+  jobs[idx] = updated
+  writeJobs(jobs)
+  res.json(updated)
+})
+
+app.delete('/api/jobs/:id', (req, res) => {
+  const jobs = readJobs()
+  const id = Number(req.params.id)
+  const idx = jobs.findIndex(j => j.id === id)
+  if (idx === -1) return res.status(404).json({ error: 'Job not found' })
+  jobs.splice(idx, 1)
+  writeJobs(jobs)
+  res.status(204).send()
+})
+
 app.listen(PORT, () => {
   console.log(`Backend API running at http://localhost:${PORT}`)
 })
